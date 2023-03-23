@@ -280,7 +280,7 @@ function App() {
                 (Number(totalRef.current?.value) || 0) *
                   ((Number(jeonseRateRef.current?.value) || 0) / 100) || 0
               )}
-              원 (총 대출금의 {jeonseRateRef.current?.value}%)
+              원 (총 대출금의 {jeonseRateRef.current?.value || 0}%)
             </FormHelperText>
           </Box>
           <Box>
@@ -301,7 +301,9 @@ function App() {
                   ((100 - (Number(jeonseRateRef.current?.value) || 0)) / 100) ||
                   0
               )}
-              원 (총 대출금의 {100 - Number(jeonseRateRef.current?.value)}%)
+              원 (총 대출금의
+              {100 - Number(jeonseRateRef.current?.value || 0)}
+              %)
             </FormHelperText>
           </Box>
         </Stack>
