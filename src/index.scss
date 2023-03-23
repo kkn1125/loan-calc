@@ -2,5 +2,22 @@ html,
 body {
   margin: 0;
   height: 100%;
-  overflow: hidden;
+  // overflow: hidden;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #9b9b9b;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #313131;
+  }
+
+  .MuiTableContainer-root::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #9b9b9b22;
+  }
+  .MuiTableContainer-root::-webkit-scrollbar-thumb {
+    background-color: #31313155;
+  }
 }

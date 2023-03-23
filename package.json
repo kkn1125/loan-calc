@@ -8,8 +8,9 @@
     "prebuild": "rm -rf dist/",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "push": "git add -A && git commit -m \"feat: update content\" && git push origin main",
     "ghpages": "cd dist && git init && git add -A && git commit -m \"gh-pages\" && git push git@github.com:kkn1125/loan-calc.git master:gh-pages -f",
-    "deploy": "npm run build && npm run ghpages"
+    "deploy": "npm run push && npm run build && npm run ghpages"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",

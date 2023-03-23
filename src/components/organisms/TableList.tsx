@@ -18,6 +18,7 @@ interface Column {
     | "creditTotal"
     | "loanCreditTotal"
     | "rest";
+  important?: boolean;
   label: string;
   minWidth?: number;
   align?: "left" | "center" | "right";
@@ -28,13 +29,14 @@ const columns: Column[] = [
   {
     id: "month",
     label: "개월",
-    minWidth: 25,
+    minWidth: 50,
     align: "center",
     format: (value: number) => value + "개월",
   },
   {
     id: "loanOrigin",
     label: "전세 이자",
+    important: true,
     minWidth: 100,
     align: "center",
     format: (value: number) => value.toLocaleString("ko") + "원",
@@ -42,6 +44,7 @@ const columns: Column[] = [
   {
     id: "creditOrigin",
     label: "신용 원금",
+    important: true,
     minWidth: 100,
     align: "center",
     format: (value: number) => value.toLocaleString("ko") + "원",
@@ -49,6 +52,7 @@ const columns: Column[] = [
   {
     id: "creditInterest",
     label: "신용 이자",
+    important: true,
     minWidth: 100,
     align: "center",
     format: (value: number) => value.toLocaleString("ko") + "원",
@@ -62,8 +66,8 @@ const columns: Column[] = [
   },
   {
     id: "loanCreditTotal",
-    label: "전+신 원리 합산",
-    minWidth: 100,
+    label: "전 + 신 원리 합산",
+    minWidth: 130,
     align: "center",
     format: (value: number) => value.toLocaleString("ko") + "원",
   },
@@ -72,7 +76,7 @@ const columns: Column[] = [
     label: "남은 원금",
     minWidth: 100,
     align: "center",
-    format: (value: number) => value.toLocaleString("ko") + "원",
+    format: (value: number) => Math.abs(value).toLocaleString("ko") + "원",
   },
 ];
 
@@ -89,7 +93,7 @@ export default function TableList({
   }[];
 }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -99,21 +103,31 @@ export default function TableList({
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  function roundTenPosition(cost: number) {
+    return Math.round(cost * 0.1) * 10;
+  }
   return (
-    <Paper sx={{ width: "100%" }}>
+    <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ maxHeight: 440 }}>
-        <Table aria-label='sticky table'>
+        <Table stickyHeader aria-label='sticky table'>
           <TableHead>
             <TableRow
               sx={{
-                backgroundColor: (theme) => theme.palette.primary.main + "56",
+                backgroundColor: (theme) => theme.palette.primary.light,
               }}>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ top: 57, minWidth: column.minWidth }}>
+                  style={{
+                    // top: 57,
+                    backgroundColor: "inherit",
+                    minWidth: column.minWidth,
+                    fontWeight: 700,
+                    color: column.important ? "#b63232" : "#000000",
+                  }}>
                   {column.label}
+                  {column.important ? "*" : ""}
                 </TableCell>
               ))}
             </TableRow>
@@ -139,12 +153,18 @@ export default function TableList({
                       {columns.map((column, q) => {
                         const value =
                           column.id === "loanOrigin"
-                            ? loan
+                            ? roundTenPosition(loan)
                             : column.id === "creditTotal"
-                            ? row.creditOrigin + row.creditInterest
+                            ? roundTenPosition(
+                                row.creditOrigin + row.creditInterest
+                              )
+                            : column.id === "month"
+                            ? row.month
                             : column.id === "loanCreditTotal"
-                            ? loan + row.creditOrigin + row.creditInterest
-                            : row[column.id];
+                            ? roundTenPosition(
+                                loan + row.creditOrigin + row.creditInterest
+                              )
+                            : roundTenPosition(row[column.id]);
                         return (
                           <TableCell
                             key={column.id}
@@ -168,7 +188,7 @@ export default function TableList({
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component='div'
         count={monthly.length}
         rowsPerPage={rowsPerPage}
