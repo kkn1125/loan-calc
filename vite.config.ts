@@ -15,6 +15,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
     define: {
       __APP_ENV__: env.APP_ENV,
     },
+    base: "",
     server: {
       host: process.env.HOST,
       port: Number(process.env.PORT),

@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "rm -rf dist/",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ghpages": "cd dist && git init && git add -A && git commit -m \"gh-pages\" && git push git@github.com:kkn1125/loan-calc.git master:gh-pages -f",
+    "deploy": "npm run build && npm run ghpages"
   },
   "dependencies": {
     "@emotion/react": "^11.10.6",
